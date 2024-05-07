@@ -39,9 +39,9 @@ endif
 
 ### Executable name
 ifeq ($(target_windows),yes)
-	EXE = brainlearn.exe
+	EXE = sudsakorn.exe
 else
-	EXE = brainlearn
+	EXE = sudsakorn
 endif
 
 ### Installation dir definitions
@@ -808,7 +808,7 @@ endif
 
 help:
 	@echo ""
-	@echo "To compile brainlearn, type: "
+	@echo "To compile sudsakorn, type: "
 	@echo ""
 	@echo "make -j target [ARCH=arch] [COMP=compiler] [COMPCXX=cxx]"
 	@echo ""
@@ -921,16 +921,16 @@ clean: objclean profileclean
 
 # clean binaries and objects
 objclean:
-	@rm -f brainlearn brainlearn.exe *.o ./syzygy/*.o ./nnue/*.o ./nnue/features/*.o ./book/*.o ./book/polyglot/*.o ./book/ctg/*.o ./learn/*.o
+	@rm -f sudsakorn sudsakorn.exe *.o ./syzygy/*.o ./nnue/*.o ./nnue/features/*.o ./book/*.o ./book/polyglot/*.o ./book/ctg/*.o ./learn/*.o
 
 # clean auxiliary profiling files
 profileclean:
 	@rm -rf profdir
 	@rm -f bench.txt *.gcda *.gcno ./syzygy/*.gcda ./nnue/*.gcda ./nnue/features/*.gcda ./book/*.gcda ./book/polyglot/*.gcda ./book/ctg/*.gcda ./learn/*.gcda *.s PGOBENCH.out
-	@rm -f brainlearn.profdata *.profraw
-	@rm -f brainlearn.*args*
-	@rm -f brainlearn.*lt*
-	@rm -f brainlearn.res
+	@rm -f sudsakorn.profdata *.profraw
+	@rm -f sudsakorn.*args*
+	@rm -f sudsakorn.*lt*
+	@rm -f sudsakorn.res
 	@rm -f ./-lstdc++.res
 
 define fetch_network
@@ -1072,9 +1072,9 @@ clang-profile-make:
 	all
 
 clang-profile-use:
-	$(XCRUN) llvm-profdata merge -output=brainlearn.profdata *.profraw
+	$(XCRUN) llvm-profdata merge -output=sudsakorn.profdata *.profraw
 	$(MAKE) ARCH=$(ARCH) COMP=$(COMP) \
-	EXTRACXXFLAGS='-fprofile-instr-use=brainlearn.profdata' \
+	EXTRACXXFLAGS='-fprofile-instr-use=sudsakorn.profdata' \
 	EXTRALDFLAGS='-fprofile-use ' \
 	all
 
@@ -1100,9 +1100,9 @@ icx-profile-make:
 	all
 
 icx-profile-use:
-	$(XCRUN) llvm-profdata merge -output=brainlearn.profdata *.profraw
+	$(XCRUN) llvm-profdata merge -output=sudsakorn.profdata *.profraw
 	$(MAKE) ARCH=$(ARCH) COMP=$(COMP) \
-	EXTRACXXFLAGS='-fprofile-instr-use=brainlearn.profdata' \
+	EXTRACXXFLAGS='-fprofile-instr-use=sudsakorn.profdata' \
 	EXTRALDFLAGS='-fprofile-use ' \
 	all
 

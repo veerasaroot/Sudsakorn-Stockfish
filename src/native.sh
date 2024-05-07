@@ -1,7 +1,7 @@
 @echo off
 REM make -j profile-build
 make profile-build ARCH=native COMP=gcc
-strip brainlearn
-ren brainlearn Brainlearn28.1-native
+strip sudsakorn
+ren sudsakorn Sudsakorn0.5-native
 make clean
 pause

@@ -3,7 +3,7 @@ REM x64 builds begin
 SET PATH=C:\tools\msys64\mingw64\bin;C:\tools\msys64\usr\bin;%PATH%
 REM make -j profile-build
 mingw32-make profile-build ARCH=native COMP=mingw -j %Number_Of_Processors%
-strip brainlearn.exe
-ren brainlearn.exe Brainlearn28.1-native.exe
+strip sudsakorn.exe
+ren sudsakorn.exe Sudsakorn0.5-native.exe
 make clean
 pause

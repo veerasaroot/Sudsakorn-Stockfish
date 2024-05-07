@@ -1770,8 +1770,7 @@ bool Position::pos_is_ok() const {
     constexpr bool Fast = true;  // Quick (default) or full check?
 
     if ((sideToMove != WHITE && sideToMove != BLACK) || piece_on(square<KING>(WHITE)) != W_KING
-        || piece_on(square<KING>(BLACK)) != B_KING
-        || (ep_square() != SQ_NONE && relative_rank(sideToMove, ep_square()) != RANK_6))
+        || piece_on(square<KING>(BLACK)) != B_KING)
         assert(0 && "pos_is_ok: Default");
 
     if (Fast)

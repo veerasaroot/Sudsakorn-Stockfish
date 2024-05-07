@@ -147,25 +147,75 @@ void MovePicker::score() {
 
     static_assert(Type == CAPTURES || Type == QUIETS || Type == EVASIONS, "Wrong type");
 
-    for (auto& m : *this)
-    if (Type == CAPTURES)
-        m.value =  PieceValue[MG][pos.piece_on(to_sq(m))]
-                - Value(200 * relative_rank(pos.side_to_move(), to_sq(m)));
-
-    else if (Type == QUIETS)
-        m.value =  (*mainHistory)[pos.side_to_move()][from_to(m)]
-                + (*contHistory[0])[pos.moved_piece(m)][to_sq(m)]
-                + (*contHistory[1])[pos.moved_piece(m)][to_sq(m)]
-                + (*contHistory[3])[pos.moved_piece(m)][to_sq(m)];
-
-    else // Type == EVASIONS
+    [[maybe_unused]] Bitboard threatenedByPawn, threatenedByMinor, threatenedByRook,
+      threatenedPieces;
+    if constexpr (Type == QUIETS)
     {
-        if (pos.capture(m))
-            m.value =  PieceValue[MG][pos.piece_on(to_sq(m))]
-                    - Value(type_of(pos.moved_piece(m)));
-        else
-            m.value = (*mainHistory)[pos.side_to_move()][from_to(m)] - (1 << 28);
+        Color us = pos.side_to_move();
+
+        threatenedByPawn = pos.attacks_by<PAWN>(~us);
+        threatenedByMinor =
+          pos.attacks_by<KNIGHT>(~us) | pos.attacks_by<BISHOP>(~us) | threatenedByPawn;
+        threatenedByRook = pos.attacks_by<ROOK>(~us) | threatenedByMinor;
+
+        // Pieces threatened by pieces of lesser material value
+        threatenedPieces = (pos.pieces(us, QUEEN) & threatenedByRook)
+                         | (pos.pieces(us, ROOK) & threatenedByMinor)
+                         | (pos.pieces(us, KNIGHT, BISHOP) & threatenedByPawn);
     }
+
+    for (auto& m : *this)
+        if constexpr (Type == CAPTURES)
+            m.value =
+              7 * int(PieceValue[pos.piece_on(m.to_sq())])
+              + (*captureHistory)[pos.moved_piece(m)][m.to_sq()][type_of(pos.piece_on(m.to_sq()))];
+
+        else if constexpr (Type == QUIETS)
+        {
+            Piece     pc   = pos.moved_piece(m);
+            PieceType pt   = type_of(pc);
+            Square    from = m.from_sq();
+            Square    to   = m.to_sq();
+
+            // histories
+            m.value = 2 * (*mainHistory)[pos.side_to_move()][m.from_to()];
+            m.value += 2 * (*pawnHistory)[pawn_structure_index(pos)][pc][to];
+            m.value += 2 * (*continuationHistory[0])[pc][to];
+            m.value += (*continuationHistory[1])[pc][to];
+            m.value += (*continuationHistory[2])[pc][to] / 4;
+            m.value += (*continuationHistory[3])[pc][to];
+            m.value += (*continuationHistory[5])[pc][to];
+
+            // bonus for checks
+            m.value += bool(pos.check_squares(pt) & to) * 16384;
+
+            // bonus for escaping from capture
+            m.value += threatenedPieces & from ? (pt == QUEEN && !(to & threatenedByRook)   ? 50000
+                                                  : pt == ROOK && !(to & threatenedByMinor) ? 25000
+                                                  : !(to & threatenedByPawn)                ? 15000
+                                                                                            : 0)
+                                               : 0;
+
+            // malus for putting piece en prise
+            m.value -= !(threatenedPieces & from)
+                       ? (pt == QUEEN ? bool(to & threatenedByRook) * 50000
+                                          + bool(to & threatenedByMinor) * 10000
+                          : pt == ROOK ? bool(to & threatenedByMinor) * 25000
+                          : pt != PAWN ? bool(to & threatenedByPawn) * 15000
+                                       : 0)
+                       : 0;
+        }
+
+        else  // Type == EVASIONS
+        {
+            if (pos.capture_stage(m))
+                m.value =
+                  PieceValue[pos.piece_on(m.to_sq())] - type_of(pos.moved_piece(m)) + (1 << 28);
+            else
+                m.value = (*mainHistory)[pos.side_to_move()][m.from_to()]
+                        + (*continuationHistory[0])[pos.moved_piece(m)][m.to_sq()]
+                        + (*pawnHistory)[pawn_structure_index(pos)][pos.moved_piece(m)][m.to_sq()];
+        }
 }
 
 // Returns the next move satisfying a predicate function.

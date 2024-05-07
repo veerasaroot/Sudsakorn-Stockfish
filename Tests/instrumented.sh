@@ -92,20 +92,20 @@ for args in "eval" \
             "uci"
 do
 
-   echo "$prefix $exeprefix ./brainlearn $args $postfix"
-   eval "$prefix $exeprefix ./brainlearn $args $postfix"
+   echo "$prefix $exeprefix ./sudsakorn $args $postfix"
+   eval "$prefix $exeprefix ./sudsakorn $args $postfix"
 
 done
 
 # verify the generated net equals the base net
-network=`./brainlearn uci | grep 'option name EvalFile type string default' | awk '{print $NF}'`
+network=`./sudsakorn uci | grep 'option name EvalFile type string default' | awk '{print $NF}'`
 echo "Comparing $network to the written verify.nnue"
 diff $network verify.nnue
 
 # more general testing, following an uci protocol exchange
 cat << EOF > game.exp
  set timeout 240
- spawn $exeprefix ./brainlearn
+ spawn $exeprefix ./sudsakorn
 
  send "uci\n"
  expect "uciok"
@@ -164,7 +164,7 @@ fi
 
 cat << EOF > syzygy.exp
  set timeout 240
- spawn $exeprefix ./brainlearn
+ spawn $exeprefix ./sudsakorn
  send "uci\n"
  send "setoption name SyzygyPath value ../tests/syzygy/\n"
  expect "info string Found 35 tablebases" {} timeout {exit 1}

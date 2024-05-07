@@ -99,7 +99,6 @@ class Position {
     template<typename... PieceTypes>
     Bitboard pieces(Color c, PieceTypes... pts) const;
     Piece    piece_on(Square s) const;
-    Square   ep_square() const;
     bool     empty(Square s) const;
     template<PieceType Pt>
     int count(Color c) const;

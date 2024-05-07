@@ -399,7 +399,6 @@ struct CtgPositionData {
 
 namespace Book::CTG {
 bool CtgBook::decode(const Position& pos, CtgPositionData& positionData) const {
-    positionData.epSquare = pos.ep_square();
     positionData.invert   = pos.side_to_move() == BLACK;
     positionData.flip     = needs_flipping(pos);
 
