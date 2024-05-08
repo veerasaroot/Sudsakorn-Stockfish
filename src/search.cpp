@@ -37,7 +37,7 @@
 #include "nnue/evaluate_nnue.h"
 #include "nnue/nnue_common.h"
 #include "position.h"
-#include "syzygy/tbprobe.h"
+// #include "syzygy/tbprobe.h"
 #include "thread.h"
 #include "timeman.h"
 #include "tt.h"
@@ -64,7 +64,7 @@ bool                               enabledLearningProbe = false;
 std::vector<PersistedLearningMove> gameLine;
 // Kelly end
 
-namespace TB = Tablebases;
+// namespace TB = Tablebases;
 
 using Eval::evaluate;
 using namespace Search;
@@ -1051,6 +1051,7 @@ Value Search::Worker::search(
     }
     // from Kelly end
 
+    /*
     // Step 5. Tablebases probe
     if (!rootNode && !excludedMove && tbConfig.cardinality)
     {
@@ -1103,6 +1104,8 @@ Value Search::Worker::search(
             }
         }
     }
+
+    */
 
     // Step 6. Static evaluation of the position
     Value unadjustedStaticEval = VALUE_NONE;
@@ -2439,7 +2442,7 @@ std::string SearchManager::pv(const Search::Worker&     worker,
     size_t      pvIdx     = worker.pvIdx;
     TimePoint   time      = tm.elapsed(nodes) + 1;
     size_t      multiPV   = std::min(size_t(worker.options["MultiPV"]), rootMoves.size());
-    uint64_t    tbHits    = threads.tb_hits() + (worker.tbConfig.rootInTB ? rootMoves.size() : 0);
+    // uint64_t    tbHits    = threads.tb_hits() + (worker.tbConfig.rootInTB ? rootMoves.size() : 0);
 
     for (size_t i = 0; i < multiPV; ++i)
     {
@@ -2454,8 +2457,8 @@ std::string SearchManager::pv(const Search::Worker&     worker,
         if (v == -VALUE_INFINITE)
             v = VALUE_ZERO;
 
-        bool tb = worker.tbConfig.rootInTB && std::abs(v) <= VALUE_TB;
-        v       = tb ? rootMoves[i].tbScore : v;
+        // bool tb = worker.tbConfig.rootInTB && std::abs(v) <= VALUE_TB;
+        // v       = tb ? rootMoves[i].tbScore : v;
 
         if (ss.rdbuf()->in_avail())  // Not at first line
             ss << "\n";
@@ -2467,13 +2470,15 @@ std::string SearchManager::pv(const Search::Worker&     worker,
         if (worker.options["UCI_ShowWDL"])
             ss << UCI::wdl(v, pos.game_ply());
 
-        if (i == pvIdx && !tb && updated)  // tablebase- and previous-scores are exact
-            ss << (rootMoves[i].scoreLowerbound
-                     ? " lowerbound"
-                     : (rootMoves[i].scoreUpperbound ? " upperbound" : ""));
+        // if (i == pvIdx && !tb && updated)  // tablebase- and previous-scores are exact
+        //     ss << (rootMoves[i].scoreLowerbound
+        //              ? " lowerbound"
+        //              : (rootMoves[i].scoreUpperbound ? " upperbound" : ""));
 
+        // ss << " nodes " << nodes << " nps " << nodes * 1000 / time << " hashfull " << tt.hashfull()
+        //    << " tbhits " << tbHits << " time " << time << " pv";
         ss << " nodes " << nodes << " nps " << nodes * 1000 / time << " hashfull " << tt.hashfull()
-           << " tbhits " << tbHits << " time " << time << " pv";
+           << " time " << time << " pv";
 
         for (Move m : rootMoves[i].pv)
             ss << " " << UCI::move(m, pos.is_chess960());

@@ -37,7 +37,7 @@
 #include "nnue/nnue_architecture.h"
 #include "position.h"
 #include "search.h"
-#include "syzygy/tbprobe.h"
+// #include "syzygy/tbprobe.h"
 #include "types.h"
 #include "ucioption.h"
 #include "perft.h"
@@ -94,10 +94,10 @@ UCI::UCI(int argc, char** argv) :
         options[Util::format_string("(CTG) Book %d Only Green", i + 1)] << Option(true);
     }
     //Book management end
-    options["SyzygyPath"] << Option("<empty>", [](const Option& o) { Tablebases::init(o); });
-    options["SyzygyProbeDepth"] << Option(1, 1, 100);
-    options["Syzygy50MoveRule"] << Option(true);
-    options["SyzygyProbeLimit"] << Option(7, 0, 7);
+    // options["SyzygyPath"] << Option("<empty>", [](const Option& o) { Tablebases::init(o); });
+    // options["SyzygyProbeDepth"] << Option(1, 1, 100);
+    // options["Syzygy50MoveRule"] << Option(true);
+    // options["SyzygyProbeLimit"] << Option(7, 0, 7);
     options["EvalFile"] << Option(EvalFileDefaultNameBig, [this](const Option&) {
         evalFiles = Eval::NNUE::load_networks(cli.binaryDirectory, options, evalFiles);
     });
@@ -395,7 +395,7 @@ void UCI::search_clear() {
     tt.clear(options["Threads"]);
     MCTS.clear();  // mcts
     threads.clear();
-    Tablebases::init(options["SyzygyPath"]);  // Free mapped files
+    // Tablebases::init(options["SyzygyPath"]);  // Free mapped files
 }
 
 void UCI::setoption(std::istringstream& is) {

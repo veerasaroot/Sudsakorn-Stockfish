@@ -31,7 +31,7 @@
 #include "misc.h"
 #include "movepick.h"
 #include "position.h"
-#include "syzygy/tbprobe.h"
+// #include "syzygy/tbprobe.h"
 #include "timeman.h"
 //from Brainlearn begin
 #include "evaluate.h"
@@ -271,7 +271,7 @@ class Worker {
     // The main thread has a SearchManager, the others have a NullSearchManager
     std::unique_ptr<ISearchManager> manager;
 
-    Tablebases::Config tbConfig;
+    // Tablebases::Config tbConfig;
     //From PolyFish begin
     BookManager&           bookMan;
     Eval::NNUE::EvalFiles& evalFiles;

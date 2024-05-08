@@ -35,7 +35,7 @@
 #include "misc.h"
 #include "movegen.h"
 #include "nnue/nnue_common.h"
-#include "syzygy/tbprobe.h"
+// #include "syzygy/tbprobe.h"
 #include "tt.h"
 #include "uci.h"
 
