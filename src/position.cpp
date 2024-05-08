@@ -1090,7 +1090,7 @@ Position& Position::set(const string& code, Color c, StateInfo* si) {
     std::transform(sides[c].begin(), sides[c].end(), sides[c].begin(), tolower);
 
     string fenStr = "8/" + sides[0] + char(8 - sides[0].length() + '0') + "/8/8/8/8/" + sides[1]
-                  + char(8 - sides[1].length() + '0') + "/8 w - - 0 10";
+                  + char(8 - sides[1].length() + '0') + "/8 w 0 10";
 
     return set(fenStr, false, si);
 }
